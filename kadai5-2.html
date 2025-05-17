@@ -1,22 +1,35 @@
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8">
-    <title>演習課題5-2：外部APIの呼び出しテスト</title>
+ 　　 <meta charset="utf-8">
+  　　<title>FetchAPI Test 東京の天気）</title>
 </head>
+
 <body>
-    <h1 id="msg">何かのAPI</h1>
-    <form name="apiform"><p>
-        何かのフォーム：<input type="text" name="form_data">
-        <button type="button" id="btn1" onclick="some_api(this.form)">実行</button>
-    </p></form>
-    
-    <div id="result"></div>
-    <script>
-        async function some_api(myForm) {
-            // ここにコードを書く
-            document.getElementById("result").innerHTML += myForm.form_data.value+"<br />";
-            document.apiform.reset();
-        }
-    </script>
+  　　<h1 id="msg">現在の東京の天気</h1>
+  　　<button type="button" id="btn1">実行</button>
+ 　　 <div id="result">ここに天気情報が表示されます</div>
+
+  <script>
+   　　 const btn1 = document.getElementById("btn1");
+   　　 btn1.onclick = async () => {
+
+      // Open-Meteo API（東京：緯度35.6895, 経度139.6917）
+     　　 const url = "https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&current_weather=true";
+
+     　　 const response = await fetch(url);
+    　　  const data = await response.json();
+     　　 const weather = data.current_weather;
+
+     　　 const html = `
+           　　  気温：</strong>${weather.temperature} ℃
+          　　   風速：</strong>${weather.windspeed} km/h
+            　　 時刻：</strong>${weather.time}
+        `;
+
+     　　 document.getElementById("result").innerHTML = html;
+    } 
+ 　　 </script>
 </body>
+
 </html>
