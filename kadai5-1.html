@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="utf-8">
@@ -6,17 +7,28 @@
 <body>
     <h1 id="msg">郵便番号API</h1>
     <form name="apiform"><p>
-        郵便番号：<input type="text" name="zipcode">
+        郵便番号：<input type="text" name="zipcode">郵便番号APIを呼び出して、結果をWebページに表示せよ。
         <button type="button" id="btn1" onclick="zip_api(this.form)">実行</button>
     </p></form>
     
     <div id="result">結果はここに表示</div>
+
     <script>
         async function zip_api(myForm) {
             const endpoint = "https://zipcloud.ibsnet.co.jp/api/search";
-            // ここにコードを書く
-            // zipcloudのAPI呼び出して結果を表示する
-            document.getElementById("result").innerHTML =  myForm.zipcode.value; // 現状ではそのまま表示しているだけ
+            const zipcode = myForm.zipcode.value;
+
+            const response = await fetch(`${endpoint}?zipcode=${zipcode}`);
+            const data = await response.json();
+
+            if (data.status === 200 && data.results) {
+                const result = data.results[0];
+                const address = `${result.address1}${result.address2}${result.address3}`;
+                document.getElementById("result").innerHTML = `住所：${address}`;
+            } 
+            else {
+                document.getElementById("result").innerHTML = `エラー：${data.message || "該当する住所が見つかりません"}`;
+            }
         }
     </script>
 </body>
